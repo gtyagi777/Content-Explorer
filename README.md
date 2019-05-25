@@ -1,5 +1,5 @@
 # Content-Explorer
-A  Web App to manage and search course content
+A  Web App to manage and search content
 
 
 ## How to setup
