@@ -1,5 +1,5 @@
-# Content-Explorer
-A  Web App to manage and search content
+# Movie DB
+A  Web App to add/Update/search Movie content. It contains Voting functionality and User Management.
 
 
 ## How to setup
