@@ -1,4 +1,3 @@
-    
 {% extends 'base.html' %}
 
 {% block title %}
@@ -6,11 +5,21 @@
 {% endblock %}
 
 {% block main %}
+<div class="col">
     <h1>{{ object }}</h1>
     <p class="lead">
         {{ object.plot }}
     </p>
+</div>
+<ul class="movie-image list-inline">
+    {% for i in object.movieimage_set.all %}
+        <li class="list-inline-item">
+            <img src="{{ i.image.url }}">
+        </li>
+    {% endfor %}
+</ul>
 
+<p> Directed by {{ object.director }} </p>
 
 {% endblock %}
 
@@ -22,5 +31,47 @@
         {{ object.get_rating_display }}
     </span>
 </div>
+
+{% if image_form %}
+<div>
+    <h2>Upload New Image</h2>
+    <form method="post"
+          enctype="multipart/form-data"
+          action="{% url 'core:MovieImageUpload' movie_id=object.id %}">
+        {% csrf_token %}
+        {{ image_form.as_p }}
+        <p>
+            <button class="btn btn-primary">
+                Upload
+            </button>
+        </p>
+    </form>
+</div>
+{% endif %}
+
+<div>
+    <h2>
+        Score: {{ object.score|default_if_none:"STD" }}
+    </h2>
+</div>
+
+<div>
+    {% if vote_form %}
+        <form 
+            method="post"
+            action="{{ vote_form_url }}">
+        {% csrf_token %}
+        {{ vote_form.as_p }}
+        <button class="btn btn-primary">
+            Vote
+        </button>
+        </form>
+    {% else %}
+        <p > Log in to vote to this movie</p>
+    {% endif %}
+</div>
+
+
+
 
 {% endblock %}
