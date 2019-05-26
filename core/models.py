@@ -7,14 +7,17 @@ from django.db.models.aggregates import (
     Sum
 )
 
+
 def movie_directory_path_with_uuid(instance, filename):
     return '{}/{}'.format(instance.movie.id, uuid4())
+
 
 class MovieImage(models.Model):
     image = models.ImageField(upload_to=movie_directory_path_with_uuid)
     uploaded = models.DateTimeField(auto_now_add=True)
     movie = models.ForeignKey('Movie', on_delete=models.CASCADE)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.CASCADE)
 
 
 class MovieManager(models.Manager):
@@ -23,13 +26,13 @@ class MovieManager(models.Manager):
         qs = self.all_with_related_persons()
         qs = qs.annotate(score=Sum('vote__value'))
         return qs
-    
+
     def all_with_related_persons(self):
         qs = self.get_queryset()
         qs = qs.select_related('director')
         qs = qs.prefetch_related('writers', 'actors')
         return qs
-    
+
     def top_movies(self, limit=10):
         qs = self.get_queryset()
         qs = qs.annotate(vote_sum=Sum('vote__value'))
@@ -37,6 +40,7 @@ class MovieManager(models.Manager):
         qs = qs.order_by('-vote_sum')
         qs = qs[:limit]
         return qs
+
 
 class Movie(models.Model):
 
@@ -53,10 +57,10 @@ class Movie(models.Model):
         (RATED_R, 'R - Restricted'),
     )
 
-    title   = models.CharField(max_length=140)
-    plot    = models.TextField()
-    year    = models.PositiveIntegerField()
-    rating  = models.IntegerField(choices=RATINGS, default=NOT_RATED)
+    title = models.CharField(max_length=140)
+    plot = models.TextField()
+    year = models.PositiveIntegerField()
+    rating = models.IntegerField(choices=RATINGS, default=NOT_RATED)
     runtime = models.PositiveIntegerField()
     website = models.URLField(blank=True)
 
@@ -106,18 +110,18 @@ class Person(models.Model):
 
     class Meta:
         ordering = ('last_name', 'first_name')
-    
+
     def __str__(self):
         if self.died:
             return '{}, {} ({} - {})'.format(
-                self.last_name, 
-                self.first_name, 
-                self.born, 
+                self.last_name,
+                self.first_name,
+                self.born,
                 self.died
             )
         return '{}, {} ({})'.format(
-            self.last_name, 
-            self.first_name, 
+            self.last_name,
+            self.first_name,
             self.born
         )
 
@@ -129,7 +133,7 @@ class Role(models.Model):
 
     def __str__(self):
         return "{} {} {}".format(self.movie_id, self.person_id, self.name)
-    
+
     class Meta:
         unique_together = ('movie', 'person', 'name')
 
@@ -145,15 +149,15 @@ class VoteManager(models.Manager):
             return Vote(
                 movie=movie,
                 user=user
-            )            
+            )
 
 
 class Vote(models.Model):
     UP = 1
     DOWN = -1
     VALUE_CHOISES = (
-        ( UP, "👍" ),
-        ( DOWN, "👎")
+        (UP, "👍"),
+        (DOWN, "👎")
     )
     value = models.SmallIntegerField(
         choices=VALUE_CHOISES,
@@ -163,7 +167,7 @@ class Vote(models.Model):
         on_delete=models.CASCADE
     )
     movie = models.ForeignKey(
-        Movie, 
+        Movie,
         on_delete=models.CASCADE
     )
     voted_on = models.DateTimeField(
