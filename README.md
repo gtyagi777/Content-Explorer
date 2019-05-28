@@ -13,6 +13,6 @@ A  Web App to add/Update/search Movie content. It contains Voting functionality 
 ## Packages Used
  
  
--Django
+- Django
 -crispy-forms
 -pillow
