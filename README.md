@@ -16,3 +16,5 @@ A  Web App to add/Update/search Movie content. It contains Voting functionality 
 - Django
 - crispy-forms
 - pillow
+
+
